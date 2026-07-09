@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Council Action",
+  "type": "object",
+  "required": [
+    "action_id",
+    "representative_id",
+    "representative_name",
+    "action_date",
+    "action_month",
+    "issue_id",
+    "issue_label",
+    "action_type",
+    "title",
+    "summary",
+    "alignment",
+    "weight",
+    "source_id",
+    "review_status",
+    "notes"
+  ],
+  "properties": {
+    "action_id": { "type": "string" },
+    "representative_id": { "type": "string" },
+    "representative_name": { "type": "string" },
+    "action_date": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+    "action_month": { "type": "string", "pattern": "^\\d{4}-\\d{2}$" },
+    "issue_id": { "type": "string" },
+    "issue_label": { "type": "string" },
+    "action_type": { "type": "string" },
+    "title": { "type": "string" },
+    "summary": { "type": "string" },
+    "alignment": { "type": "string" },
+    "weight": { "type": ["number", "string"] },
+    "source_id": { "type": "string" },
+    "source_name": { "type": "string" },
+    "source_url": { "type": "string" },
+    "source_file": { "type": "string" },
+    "review_status": { "type": "string" },
+    "notes": { "type": "string" }
+  }
+}

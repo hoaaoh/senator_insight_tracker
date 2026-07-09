@@ -1,0 +1,24 @@
+# Local model/runtime dependencies
+**/.tools/
+**/__pycache__/
+*.pyc
+
+# Legacy integrated MVP. The public Pages site uses viewer/.
+mvp/
+
+# Pipeline working data can contain ASR drafts, review notes, raw source probes,
+# and intermediate CSVs. Keep the public repo focused on tools + viewer output.
+pipeline/data/
+
+# Raw media can be regenerated from registered sources
+**/data/raw/
+*.m4a
+*.mp4
+*.wav
+
+# Unused large rendered gazette pages; viewer links the PDF and cropped snippets.
+viewer/sources/cec-banqiao-gazette-page-*.png
+viewer/sources/cec-2022-new-taipei-district-05-banqiao.pdf.png
+
+# OS/editor noise
+.DS_Store

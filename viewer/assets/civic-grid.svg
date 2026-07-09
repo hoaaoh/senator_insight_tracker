@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 320" role="img" aria-label="abstract civic data grid">
+  <rect width="1400" height="320" fill="#f6f7f3"/>
+  <g opacity=".72">
+    <path d="M0 235 C 140 180, 255 270, 410 202 S 710 118, 850 166 S 1090 267, 1400 132" fill="none" stroke="#167c80" stroke-width="4"/>
+    <path d="M0 164 C 170 110, 285 178, 430 136 S 705 68, 890 101 S 1125 190, 1400 74" fill="none" stroke="#c98921" stroke-width="3"/>
+    <path d="M0 276 C 145 238, 315 292, 470 246 S 780 185, 950 221 S 1165 298, 1400 206" fill="none" stroke="#365c91" stroke-width="3"/>
+  </g>
+  <g fill="#ffffff" stroke="#d9dfda" stroke-width="2">
+    <rect x="70" y="54" width="66" height="46" rx="8"/>
+    <rect x="164" y="120" width="86" height="58" rx="8"/>
+    <rect x="286" y="62" width="74" height="74" rx="8"/>
+    <rect x="418" y="165" width="96" height="60" rx="8"/>
+    <rect x="560" y="88" width="88" height="88" rx="8"/>
+    <rect x="720" y="138" width="72" height="72" rx="8"/>
+    <rect x="854" y="54" width="112" height="66" rx="8"/>
+    <rect x="1010" y="160" width="78" height="88" rx="8"/>
+    <rect x="1144" y="92" width="92" height="58" rx="8"/>
+    <rect x="1288" y="172" width="68" height="68" rx="8"/>
+  </g>
+  <g opacity=".82">
+    <circle cx="103" cy="77" r="7" fill="#167c80"/>
+    <circle cx="207" cy="149" r="7" fill="#c95047"/>
+    <circle cx="323" cy="99" r="7" fill="#365c91"/>
+    <circle cx="466" cy="195" r="7" fill="#2f7d4f"/>
+    <circle cx="604" cy="132" r="7" fill="#c98921"/>
+    <circle cx="756" cy="174" r="7" fill="#167c80"/>
+    <circle cx="910" cy="87" r="7" fill="#6554a6"/>
+    <circle cx="1049" cy="204" r="7" fill="#c95047"/>
+    <circle cx="1190" cy="121" r="7" fill="#2f7d4f"/>
+    <circle cx="1322" cy="206" r="7" fill="#365c91"/>
+  </g>
+</svg>

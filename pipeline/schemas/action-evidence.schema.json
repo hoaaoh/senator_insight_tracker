@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Council Action Evidence",
+  "type": "object",
+  "required": [
+    "action_id",
+    "chunk_id",
+    "source_id",
+    "source_url",
+    "start_seconds",
+    "end_seconds",
+    "representative_id",
+    "representative_name",
+    "issue_id",
+    "issue_label",
+    "evidence_role",
+    "evidence_summary",
+    "review_status",
+    "notes"
+  ],
+  "properties": {
+    "action_id": { "type": "string" },
+    "chunk_id": { "type": "string" },
+    "source_id": { "type": "string" },
+    "source_url": { "type": "string" },
+    "start_seconds": { "type": ["number", "string"] },
+    "end_seconds": { "type": ["number", "string"] },
+    "representative_id": { "type": "string" },
+    "representative_name": { "type": "string" },
+    "issue_id": { "type": "string" },
+    "issue_label": { "type": "string" },
+    "evidence_role": { "type": "string", "enum": ["core", "detail", "tail"] },
+    "evidence_summary": { "type": "string" },
+    "evidence_frame": { "type": "string" },
+    "review_status": { "type": "string" },
+    "notes": { "type": "string" }
+  }
+}

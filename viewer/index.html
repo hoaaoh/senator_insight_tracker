@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>政治議題追蹤 MVP</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="app-header">
+      <div>
+        <p class="eyebrow">Public Issue Accountability</p>
+        <h1>板橋區議員議題趨勢與行動追蹤</h1>
+      </div>
+      <div class="header-status">
+        <span class="status-dot"></span>
+        <span>Demo 模式</span>
+      </div>
+    </header>
+
+    <main class="workspace">
+      <aside class="sidebar" aria-label="篩選器">
+        <div class="control-group">
+          <label for="monthSelect">月份</label>
+          <select id="monthSelect"></select>
+        </div>
+        <div class="control-group">
+          <label for="repSelect">民意代表</label>
+          <select id="repSelect"></select>
+        </div>
+        <div class="control-group">
+          <label for="issueSelect">議題</label>
+          <select id="issueSelect"></select>
+        </div>
+        <div class="legend">
+          <div class="legend-row">
+            <span class="swatch low"></span>
+            <span>高輿情、低行動</span>
+          </div>
+          <div class="legend-row">
+            <span class="swatch mid"></span>
+            <span>部分回應</span>
+          </div>
+          <div class="legend-row">
+            <span class="swatch high"></span>
+            <span>回應充分</span>
+          </div>
+          <div class="legend-row">
+            <span class="swatch conflict"></span>
+            <span>與政見衝突</span>
+          </div>
+          <div class="legend-row">
+            <span class="swatch pledge"></span>
+            <span>藍條：政見關注比重</span>
+          </div>
+        </div>
+      </aside>
+
+      <section class="content">
+        <section class="demo-notice" aria-label="Demo 模式說明">
+          <strong>Demo 模式</strong>
+          <span>本頁用來展示資料流程與互動介面；含待查證 seed 行動、ASR 初稿與人工整理中的分類 notes，不代表正式查證結果。</span>
+          <a href="./reviewer/review.html">開啟校正工作台</a>
+        </section>
+
+        <section class="kpi-grid" aria-label="本月摘要">
+          <article class="kpi">
+            <span>本月最高熱度</span>
+            <strong id="hotIssue">--</strong>
+            <small id="hotIssueMeta">--</small>
+          </article>
+          <article class="kpi">
+            <span>行動紀錄</span>
+            <strong id="actionCount">--</strong>
+            <small id="actionCountMeta">--</small>
+          </article>
+          <article class="kpi">
+            <span>政見一致率</span>
+            <strong id="alignmentRate">--</strong>
+            <small>符合或部分符合的行動占比</small>
+          </article>
+          <article class="kpi warning">
+            <span>回應落差</span>
+            <strong id="responseGap">--</strong>
+            <small id="responseGapMeta">--</small>
+          </article>
+        </section>
+
+        <section class="analysis-grid">
+          <section class="panel heatmap-panel">
+            <div class="panel-title">
+              <div>
+                <p class="eyebrow">Heatmap</p>
+                <div class="title-inline">
+                  <h2>民代 x 議題回應度</h2>
+                  <button id="resetFilters" class="ghost-button" type="button" hidden>
+                    回到總覽
+                  </button>
+                </div>
+              </div>
+              <span id="heatmapMonth" class="pill"></span>
+            </div>
+            <div id="heatmap" class="heatmap" role="grid"></div>
+          </section>
+
+          <section class="panel trend-panel">
+            <div class="panel-title">
+              <div>
+                <p class="eyebrow">Trend</p>
+                <h2>議題輿情趨勢</h2>
+              </div>
+              <span id="trendIssue" class="pill"></span>
+            </div>
+            <div id="trendChart" class="trend-chart" aria-label="議題趨勢圖"></div>
+          </section>
+        </section>
+
+        <section class="detail-grid">
+          <section class="panel">
+            <div class="panel-title">
+              <div>
+                <p class="eyebrow">Timeline</p>
+                <h2>行動指數曲線</h2>
+              </div>
+              <div class="panel-actions">
+                <label class="compact-label" for="timelineUnit">單位</label>
+                <select id="timelineUnit" class="compact-select">
+                  <option value="month">月</option>
+                  <option value="day">日</option>
+                </select>
+              </div>
+            </div>
+            <div id="timeline" class="timeline"></div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-title">
+              <div>
+                <p class="eyebrow">Pledge Match</p>
+                <h2>政見對照</h2>
+              </div>
+            </div>
+            <div id="pledgePanel" class="pledge-panel"></div>
+          </section>
+        </section>
+      </section>
+    </main>
+
+    <script src="./data.js"></script>
+    <script src="./pledges.js"></script>
+    <script src="./actions.js"></script>
+    <script src="./actionEvidence.js"></script>
+    <script src="./app.js"></script>
+  </body>
+</html>
