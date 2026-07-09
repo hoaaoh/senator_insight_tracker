@@ -50,3 +50,15 @@ python3 -m http.server 5173 --directory viewer
 ```text
 /reviewer/review.html
 ```
+
+## License
+
+This repository uses layered licensing:
+
+- Source code is licensed under the MIT License. See `LICENSE`.
+- Curated datasets, labels, summaries, topic classifications, and review notes
+  created for this project are licensed under CC BY 4.0. See `DATA_LICENSE.md`.
+- Source materials such as election gazette PDFs, council video screenshots,
+  YouTube videos, official records, news articles, and social media posts remain
+  under their original source terms and are not relicensed by this repository.
+  See `NOTICE.md`.
