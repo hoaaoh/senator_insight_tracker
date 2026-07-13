@@ -59,18 +59,52 @@ function textForRange(segments, start, end) {
     .trim();
 }
 
+function getVideoId(sourceUrl, fallback = "") {
+  try {
+    const url = new URL(sourceUrl);
+    if (url.hostname.includes("youtu.be")) {
+      return url.pathname.split("/").filter(Boolean)[0] || fallback;
+    }
+    return url.searchParams.get("v") || fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+function watchUrl(videoId, seconds) {
+  if (!videoId) return "";
+  return `https://www.youtube.com/watch?v=${videoId}&t=${Math.max(0, Math.floor(seconds))}s`;
+}
+
+function embedUrl(videoId, start, end) {
+  if (!videoId) return "";
+  const params = new URLSearchParams({
+    start: String(Math.max(0, Math.floor(start))),
+    end: String(Math.max(1, Math.ceil(end))),
+    controls: "1",
+    enablejsapi: "1",
+    rel: "0",
+    playsinline: "1",
+  });
+  return `https://www.youtube.com/embed/${videoId}?${params.toString()}`;
+}
+
 const evidenceRows = parseCsv(await readFile(evidencePath, "utf8"));
 const segments = parseCsv(await readFile(segmentsPath, "utf8"));
 
 const items = evidenceRows.map((row, index) => {
   const start = Number(row.start_seconds);
   const end = Number(row.end_seconds);
+  const videoId = getVideoId(row.source_url, "LYxQ5yS4Xrg");
   return {
     queue_item_id: `review-${String(index + 1).padStart(3, "0")}`,
     action_id: row.action_id,
     chunk_id: row.chunk_id,
     source_id: row.source_id,
     source_url: row.source_url,
+    video_id: videoId,
+    watch_url: watchUrl(videoId, start),
+    embed_url: embedUrl(videoId, start, end),
     start_seconds: start,
     end_seconds: end,
     representative_id: row.representative_id,

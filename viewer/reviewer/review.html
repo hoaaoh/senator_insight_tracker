@@ -3,178 +3,74 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>議會質詢校正工作台</title>
+    <title>議會質詢校正任務清單</title>
     <link rel="stylesheet" href="./review.css" />
   </head>
   <body>
     <header class="review-header">
       <div>
-        <p class="eyebrow">Transcript Review</p>
-        <h1>議會質詢校正工作台</h1>
-        <p id="queueMeta" class="meta-line">載入校正任務中...</p>
+        <p class="eyebrow">Review Queue</p>
+        <h1>議會質詢校正任務清單</h1>
+        <p id="reviewHomeMeta" class="meta-line">載入影片與片段清單中...</p>
       </div>
       <div class="header-actions">
-        <button id="exportJson" type="button">匯出 JSON</button>
-        <button id="openIssue" type="button">開 GitHub Issue</button>
+        <a class="back-link" href="../index.html">回到總覽</a>
       </div>
     </header>
 
-    <main class="review-shell">
-      <aside class="queue-panel">
+    <main class="review-home-shell">
+      <aside class="review-home-panel">
         <div class="progress-card">
-          <strong id="progressText">0 / 0</strong>
-          <span>已確認段落</span>
-          <div class="progress-bar"><span id="progressBar"></span></div>
+          <strong id="targetCount">0</strong>
+          <span>可追蹤影片/片段</span>
+          <div class="progress-bar"><span id="readyBar"></span></div>
         </div>
-        <label class="field-label" for="reviewerName">Reviewer</label>
-        <input id="reviewerName" placeholder="你的名字或代號" />
-        <label class="field-label" for="githubRepo">GitHub Repo</label>
-        <input id="githubRepo" placeholder="owner/repo" />
-        <div id="queueList" class="queue-list"></div>
+
+        <label class="field-label" for="targetSearch">搜尋</label>
+        <input id="targetSearch" placeholder="搜尋議員、影片、日期或議題" />
+
+        <label class="field-label" for="yearFilter">年度</label>
+        <select id="yearFilter"></select>
+
+        <label class="field-label" for="issueFilter">分類</label>
+        <select id="issueFilter"></select>
+
+        <label class="field-label" for="statusFilter">狀態</label>
+        <select id="statusFilter">
+          <option value="all">全部</option>
+          <option value="ready">可校正</option>
+          <option value="draft">進行中</option>
+          <option value="done">已審閱</option>
+          <option value="excluded">已排除</option>
+          <option value="asr_waiting">ASR 待處理</option>
+        </select>
+
+        <section class="task-panel" aria-label="清單分組">
+          <div class="task-heading">
+            <p class="eyebrow">Group By</p>
+            <h2>排列方式</h2>
+          </div>
+          <div class="task-tabs three-tabs" role="group" aria-label="任務分組">
+            <button id="homeGroupByCouncilor" type="button">依議員</button>
+            <button id="homeGroupByYear" class="active" type="button">依年度</button>
+            <button id="homeGroupByIssue" type="button">依分類</button>
+          </div>
+        </section>
       </aside>
 
-      <section class="workbench" aria-label="校正表單">
-        <section class="source-panel">
-          <div class="section-heading">
-            <div>
-              <p class="eyebrow">Source</p>
-              <h2 id="itemTitle">--</h2>
-            </div>
-            <span id="itemCounter" class="pill">--</span>
+      <section class="target-workbench" aria-label="影片片段清單">
+        <div class="target-heading">
+          <div>
+            <p class="eyebrow">May - June Batch</p>
+            <h2>先選一支影片或片段</h2>
           </div>
-          <div class="evidence-grid">
-            <figure class="frame-card">
-              <img id="evidenceFrame" alt="質詢影格" />
-              <figcaption id="frameCaption">影格</figcaption>
-            </figure>
-            <div class="source-details">
-              <a id="sourceLink" class="source-button" target="_blank" rel="noreferrer">開啟原始影片</a>
-              <dl>
-                <div>
-                  <dt>時間</dt>
-                  <dd id="timeRange">--</dd>
-                </div>
-                <div>
-                  <dt>建議議員</dt>
-                  <dd id="suggestedSpeaker">--</dd>
-                </div>
-                <div>
-                  <dt>建議議題</dt>
-                  <dd id="suggestedIssue">--</dd>
-                </div>
-                <div>
-                  <dt>建議角色</dt>
-                  <dd id="suggestedRole">--</dd>
-                </div>
-              </dl>
-            </div>
-          </div>
-          <div class="asr-card">
-            <div class="mini-heading">ASR 原文</div>
-            <p id="asrText"></p>
-          </div>
-        </section>
-
-        <section class="form-panel">
-          <div class="form-grid">
-            <label>
-              <span>是否納入</span>
-              <select id="includeStatus">
-                <option value="include">納入</option>
-                <option value="exclude">排除</option>
-                <option value="uncertain">不確定</option>
-              </select>
-            </label>
-            <label>
-              <span>發言者</span>
-              <select id="speakerId"></select>
-            </label>
-            <label>
-              <span>發言者信心</span>
-              <select id="speakerConfidence">
-                <option value="confirmed">確認</option>
-                <option value="likely">大致可信</option>
-                <option value="uncertain">不確定</option>
-              </select>
-            </label>
-            <label>
-              <span>主要議題</span>
-              <select id="primaryIssue"></select>
-            </label>
-            <fieldset>
-              <legend>次要議題</legend>
-              <div id="secondaryIssues" class="checkbox-grid"></div>
-            </fieldset>
-            <label>
-              <span>行動類型</span>
-              <select id="actionType">
-                <option value="質詢">質詢</option>
-                <option value="要求改善">要求改善</option>
-                <option value="要求專案報告">要求專案報告</option>
-                <option value="索取資料">索取資料</option>
-                <option value="追蹤承諾">追蹤承諾</option>
-                <option value="非行動">非行動</option>
-              </select>
-            </label>
-            <label>
-              <span>行動意圖</span>
-              <input id="actionIntent" placeholder="例如：要求專案報告、追問收益歸屬" />
-            </label>
-            <label>
-              <span>證據角色</span>
-              <select id="evidenceRole">
-                <option value="core">core - 核心證據</option>
-                <option value="detail">detail - 補充細節</option>
-                <option value="tail">tail - 收尾結論</option>
-                <option value="exclude">exclude - 排除</option>
-              </select>
-              <small id="evidenceRoleHelp" class="field-help"></small>
-            </label>
-          </div>
-
-          <details class="role-guide" open>
-            <summary>證據角色怎麼判斷？</summary>
-            <dl>
-              <div>
-                <dt>core</dt>
-                <dd>最能代表這筆行動的段落，例如直接追問補助金額、收益歸屬或提出明確要求。</dd>
-              </div>
-              <div>
-                <dt>detail</dt>
-                <dd>補充背景、金額、官員答覆、制度機制或追問細節，幫助理解核心行動。</dd>
-              </div>
-              <div>
-                <dt>tail</dt>
-                <dd>質詢結尾、主席回應、要求列入、要求專案報告，用來標示這串質詢的結論。</dd>
-              </div>
-              <div>
-                <dt>exclude</dt>
-                <dd>不應納入這筆 action，例如換下一位議員、程序發言、ASR 錯接或與議題無關。</dd>
-              </div>
-            </dl>
-          </details>
-
-          <label class="textarea-label">
-            <span>校正版逐字稿</span>
-            <textarea id="correctedText" rows="8"></textarea>
-          </label>
-          <label class="textarea-label">
-            <span>Notes</span>
-            <textarea id="reviewNotes" rows="5" placeholder="請寫分類理由、疑義、是否需二次確認"></textarea>
-          </label>
-
-          <div class="form-actions">
-            <button id="prevItem" type="button">上一段</button>
-            <button id="skipItem" type="button">跳過</button>
-            <button id="saveDraft" type="button">儲存草稿</button>
-            <button id="confirmItem" class="primary" type="button">確認這段</button>
-            <button id="nextItem" type="button">下一段</button>
-          </div>
-        </section>
+          <span id="filteredCount" class="pill">--</span>
+        </div>
+        <div id="targetList" class="target-list"></div>
       </section>
     </main>
 
     <script src="../data.js"></script>
-    <script src="./review.js"></script>
+    <script src="./review-home.js"></script>
   </body>
 </html>

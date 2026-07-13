@@ -48,7 +48,8 @@ node pipeline/tools/build-review-queue.mjs
 ## 質詢影片處理流程
 
 ```text
-download-youtube-audio/video-segment
+影片索引
+→ download-youtube-audio/video-segment
 → transcribe_faster_whisper.py
 → append-transcript-segments.mjs
 → build-transcript-chunks.mjs
@@ -59,6 +60,92 @@ download-youtube-audio/video-segment
 ```
 
 目前 ASR 初稿仍需人工校正後才能視為可公開引用文字；viewer 端會顯示 `review_status` 以區分待查證與已確認資料。
+
+## 建立新北市議會 YouTube 影片索引
+
+```bash
+node pipeline/tools/crawl-council-youtube-streams.mjs
+```
+
+預設會從「新北市議會網路直播」YouTube streams 頁面抓 114、115 年影片，輸出：
+
+```text
+pipeline/data/video_index/ntpc_council_youtube_streams.json
+pipeline/data/video_index/ntpc_council_youtube_streams.csv
+```
+
+可調整民國年份或最多翻頁數：
+
+```bash
+node pipeline/tools/crawl-council-youtube-streams.mjs --years=113,114,115 --max-pages=30
+```
+
+## 建立 ASR 批次佇列
+
+先從大會議事影音開始排程：
+
+```bash
+node pipeline/tools/build-asr-job-queue.mjs --priority=high --segment-seconds=1800
+```
+
+輸出：
+
+```text
+pipeline/data/asr_queue/ntpc_council_high_all_all_1800s.json
+pipeline/data/asr_queue/ntpc_council_high_all_all_1800s.csv
+```
+
+先做單月試跑可加日期範圍：
+
+```bash
+node pipeline/tools/build-asr-job-queue.mjs \
+  --priority=high \
+  --date-from=2026-04-01 \
+  --date-to=2026-04-30 \
+  --segment-seconds=1800
+```
+
+目前五月到六月大會議事影音批次：
+
+```bash
+node pipeline/tools/build-asr-job-queue.mjs \
+  --priority=high \
+  --date-from=2026-05-01 \
+  --date-to=2026-06-30 \
+  --segment-seconds=1800
+```
+
+這會產生 32 支影片、208 個 30 分鐘 ASR job，總音訊長度約 94.85 小時。這批先作為 MVP 的主要 ASR 工作清單。
+
+每個 job 會包含：
+
+- YouTube 影片與時間範圍
+- 預期音訊、逐字稿 JSON、segment CSV 路徑
+- `download_command`
+- `transcribe_command`
+- `append_segments_command`
+
+音訊下載工具會先快取整支 YouTube 音訊到：
+
+```text
+pipeline/data/raw/cache/<source-id>.full.m4a
+```
+
+後續同一支影片的不同 ASR job 會從本機 cache 切出片段，避免每段都重新從 YouTube 串流切片。這比直接用 `--download-sections` 穩定許多。
+
+目前 faster-whisper 預設不開 `--vad-filter`。議會影片有時會被 VAD 誤判成全段無語音，導致 0 segment；先完整轉錄，再用後處理規則排除程序、空轉或非質詢片段。
+
+先預覽第一個尚未轉錄的 job：
+
+```bash
+node pipeline/tools/run-asr-job.mjs --first --dry-run
+```
+
+執行指定 job：
+
+```bash
+node pipeline/tools/run-asr-job.mjs --job-id=<job_id>
+```
 
 ## 產生人工校正 Queue
 
@@ -72,4 +159,57 @@ node pipeline/tools/build-review-queue.mjs
 viewer/reviewer/review_queue.json
 ```
 
-使用者可在 GitHub Pages 開啟 `/reviewer/review.html` 校正，最後下載 JSON 或開 GitHub Issue 回傳。
+使用者可在 GitHub Pages 開啟 `/reviewer/review.html` 先選擇影片或片段；點進單一任務後會進入 `/reviewer/label.html?queue=<queue>.json` 校正。每個 queue 代表一支影片或一個明確片段，最後匯出的 JSON 只包含當前 queue 的人工校正結果。
+
+更新公開任務清單：
+
+```bash
+node pipeline/tools/build-review-video-manifest.mjs
+```
+
+輸出：
+
+```text
+viewer/reviewer/video_manifest.json
+```
+
+這份檔案只放公開影片 metadata、ASR job 數、校正 queue path 與狀態，不放本機音訊、原始逐字稿或 `pipeline/data/` 內的工作檔。
+
+## 產生 ASR 初步標註 Queue
+
+針對單一 ASR segments CSV 產生 reviewer queue：
+
+```bash
+node pipeline/tools/build-asr-review-queue.mjs \
+  --segments=pipeline/data/transcripts/<job>.segments.csv \
+  --output=viewer/reviewer/asr_review_queue.json
+```
+
+開啟方式：
+
+```text
+/reviewer/label.html?queue=asr_review_queue.json
+```
+
+目前 labeling 是 `keyword-rules-v1`：會先合併相鄰 ASR segments，推測議題、行動類型、是否納入與 evidence role。這只是初稿，正式資料仍需人工確認。
+
+## 轉換單支影片 ASR 結果
+
+當同一支 YouTube 影片的 ASR jobs 都完成後，先跑：
+
+```bash
+node pipeline/tools/build-video-review-queues.mjs --video-id=<youtube_video_id>
+```
+
+這支工具會讀取該影片所有 `.segments.csv`，先用規則判斷是否值得人工校正：
+
+- 若大量重複「法定人數不足」、片尾音樂或程序片段，會寫入 `viewer/reviewer/video_review_decisions.json` 並標成 `excluded`。
+- 若看起來有有效質詢，會輸出單支影片 queue 到 `viewer/reviewer/queues/<queue-id>.json`，再由 reviewer 入口顯示為可校正。
+
+接著重建公開清單：
+
+```bash
+node pipeline/tools/build-review-video-manifest.mjs
+```
+
+目前這是規則版 MVP。之後會把「單支影片 queue」再細切成多個「議員 × 議題/質詢段落」小題目。

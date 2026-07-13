@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { mkdir } from "node:fs/promises";
+import { access, mkdir } from "node:fs/promises";
 import { spawn } from "node:child_process";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -9,6 +9,7 @@ const PYTHON = process.env.PYTHON || "python3";
 const PROJECT_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const PYDEPS = path.join(PROJECT_ROOT, ".tools", "pydeps");
 const RAW_DIR = path.join(PROJECT_ROOT, "data", "raw");
+const CACHE_DIR = path.join(RAW_DIR, "cache");
 
 function usage() {
   console.error(
@@ -38,6 +39,15 @@ function run(command, args, options = {}) {
   });
 }
 
+async function fileExists(filePath) {
+  try {
+    await access(filePath);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 const [url, sourceId, startRaw, durationRaw] = process.argv.slice(2);
 if (!url || !sourceId || !startRaw || !durationRaw) {
   usage();
@@ -52,37 +62,56 @@ if (!Number.isFinite(startSeconds) || !Number.isFinite(durationSeconds) || durat
 }
 
 const endSeconds = startSeconds + durationSeconds;
-const section = `*${formatTime(startSeconds)}-${formatTime(endSeconds)}`;
 const outputTemplate = `${sourceId}-${formatTime(startSeconds).replaceAll(":", "")}-${formatTime(endSeconds).replaceAll(":", "")}.%(ext)s`;
+const segmentPath = path.join(RAW_DIR, outputTemplate.replace("%(ext)s", "m4a"));
+const cachePath = path.join(CACHE_DIR, `${sourceId}.full.m4a`);
 
 await mkdir(RAW_DIR, { recursive: true });
+await mkdir(CACHE_DIR, { recursive: true });
 
-await run(
-  PYTHON,
-  [
-    "-m",
-    "yt_dlp",
-    "--paths",
-    RAW_DIR,
-    "--download-sections",
-    section,
-    "--force-keyframes-at-cuts",
-    "-f",
-    "bestaudio[ext=m4a]/bestaudio",
-    "--extract-audio",
-    "--audio-format",
-    "m4a",
-    "-o",
-    outputTemplate,
-    url,
-  ],
-  {
-    env: {
-      ...process.env,
-      PYTHONPATH: [PYDEPS, process.env.PYTHONPATH].filter(Boolean).join(path.delimiter),
-    },
-  }
-);
+if (!(await fileExists(cachePath))) {
+  await run(
+    PYTHON,
+    [
+      "-m",
+      "yt_dlp",
+      "--paths",
+      CACHE_DIR,
+      "-f",
+      "bestaudio[ext=m4a]/bestaudio",
+      "--extract-audio",
+      "--audio-format",
+      "m4a",
+      "-o",
+      `${sourceId}.full.%(ext)s`,
+      url,
+    ],
+    {
+      env: {
+        ...process.env,
+        PYTHONPATH: [PYDEPS, process.env.PYTHONPATH].filter(Boolean).join(path.delimiter),
+      },
+    }
+  );
+} else {
+  console.log(`Using cached audio: ${cachePath}`);
+}
+
+await run("ffmpeg", [
+  "-y",
+  "-ss",
+  formatTime(startSeconds),
+  "-t",
+  String(durationSeconds),
+  "-i",
+  cachePath,
+  "-vn",
+  "-c:a",
+  "aac",
+  "-b:a",
+  "128k",
+  segmentPath,
+]);
 
 console.log(
   JSON.stringify(
@@ -92,8 +121,9 @@ console.log(
       startSeconds,
       durationSeconds,
       endSeconds,
-      section,
       rawDir: RAW_DIR,
+      cachePath,
+      segmentPath,
       outputTemplate,
     },
     null,

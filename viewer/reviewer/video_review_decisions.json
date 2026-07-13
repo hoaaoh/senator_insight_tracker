@@ -1,0 +1,176 @@
+{
+  "version": 1,
+  "generated_at": "2026-07-12T01:34:37.341Z",
+  "decisions": [
+    {
+      "video_id": "cXLiThfTPSc",
+      "source_id": "ntpc-council-youtube-1150608-cXLiThfTPSc",
+      "title": "「新北市議會」大會議事影音1150608",
+      "date": "2026-06-08",
+      "roc_year": "115",
+      "status_hint": "excluded",
+      "status_label": "已排除",
+      "decision_reason": "排除：重複/程序內容比例高。top=\"法定人數不足\" 60/64，排除線索 64/64，行動線索 0/64。",
+      "total_segments": 64,
+      "top_texts": [
+        {
+          "text": "法定人數不足",
+          "count": 60
+        },
+        {
+          "text": "詞曲李宗盛",
+          "count": 4
+        }
+      ],
+      "updated_at": "2026-07-11T14:41:56.628Z"
+    },
+    {
+      "video_id": "HYvrgNbbvuI",
+      "source_id": "ntpc-council-youtube-1150608-HYvrgNbbvuI",
+      "title": "「新北市議會」大會議事影音1150608",
+      "date": "2026-06-08",
+      "roc_year": "115",
+      "status_hint": "queue_ready",
+      "status_label": "可校正",
+      "decision_reason": "可產生初步 queue：排除線索 11/5678，行動線索 311/5678。",
+      "queue_id": "video-ntpccouncilyoutube1150608HYvrgNbbvuI",
+      "queue_path": "queues/video-ntpccouncilyoutube1150608HYvrgNbbvuI.json",
+      "item_count": 128,
+      "total_segments": 5678,
+      "top_texts": [
+        {
+          "text": "山海交配秘境",
+          "count": 29
+        },
+        {
+          "text": "好了",
+          "count": 16
+        },
+        {
+          "text": "對不對",
+          "count": 13
+        },
+        {
+          "text": "謝謝",
+          "count": 12
+        },
+        {
+          "text": "檢查",
+          "count": 11
+        }
+      ],
+      "updated_at": "2026-07-11T22:14:12.285Z"
+    },
+    {
+      "video_id": "xspOb7P5iu4",
+      "source_id": "ntpc-council-youtube-1150605-xspOb7P5iu4",
+      "title": "「新北市議會」大會議事影音1150605",
+      "date": "2026-06-05",
+      "roc_year": "115",
+      "status_hint": "queue_ready",
+      "status_label": "可校正",
+      "decision_reason": "可產生初步 queue：排除線索 8/5736，行動線索 216/5736。",
+      "queue_id": "video-ntpccouncilyoutube1150605xspOb7P5iu4",
+      "queue_path": "queues/video-ntpccouncilyoutube1150605xspOb7P5iu4.json",
+      "item_count": 167,
+      "total_segments": 5736,
+      "top_texts": [
+        {
+          "text": "採礦業有",
+          "count": 40
+        },
+        {
+          "text": "很難",
+          "count": 19
+        },
+        {
+          "text": "審柴意見同意查照",
+          "count": 17
+        },
+        {
+          "text": "瓶林是擁有豐富自然生態的百年茶香",
+          "count": 13
+        },
+        {
+          "text": "對",
+          "count": 12
+        }
+      ],
+      "updated_at": "2026-07-11T23:35:27.352Z"
+    },
+    {
+      "video_id": "7jYfcA8IbDc",
+      "source_id": "ntpc-council-youtube-1150604-7jYfcA8IbDc",
+      "title": "「新北市議會」大會議事影音1150604",
+      "date": "2026-06-04",
+      "roc_year": "115",
+      "status_hint": "queue_ready",
+      "status_label": "可校正",
+      "decision_reason": "可產生初步 queue：排除線索 70/5935，行動線索 259/5935。",
+      "queue_id": "video-ntpccouncilyoutube11506047jYfcA8IbDc",
+      "queue_path": "queues/video-ntpccouncilyoutube11506047jYfcA8IbDc.json",
+      "item_count": 180,
+      "total_segments": 5935,
+      "top_texts": [
+        {
+          "text": "法定人數不足",
+          "count": 62
+        },
+        {
+          "text": "山峽",
+          "count": 30
+        },
+        {
+          "text": "按照審查意見通過",
+          "count": 15
+        },
+        {
+          "text": "好",
+          "count": 13
+        },
+        {
+          "text": "謝謝",
+          "count": 12
+        }
+      ],
+      "updated_at": "2026-07-12T00:46:11.941Z"
+    },
+    {
+      "video_id": "gXAAwaCjZIQ",
+      "source_id": "ntpc-council-youtube-1150603-gXAAwaCjZIQ",
+      "title": "「新北市議會」大會議事影音1150603_上午",
+      "date": "2026-06-03",
+      "roc_year": "115",
+      "status_hint": "queue_ready",
+      "status_label": "可校正",
+      "decision_reason": "可產生初步 queue：排除線索 2/5022，行動線索 212/5022。",
+      "queue_id": "video-ntpccouncilyoutube1150603gXAAwaCjZIQ",
+      "queue_path": "queues/video-ntpccouncilyoutube1150603gXAAwaCjZIQ.json",
+      "item_count": 89,
+      "total_segments": 5022,
+      "top_texts": [
+        {
+          "text": "現在",
+          "count": 30
+        },
+        {
+          "text": "好",
+          "count": 23
+        },
+        {
+          "text": "我告訴你",
+          "count": 16
+        },
+        {
+          "text": "是",
+          "count": 15
+        },
+        {
+          "text": "對",
+          "count": 14
+        }
+      ],
+      "updated_at": "2026-07-12T01:34:37.341Z"
+    }
+  ]
+}

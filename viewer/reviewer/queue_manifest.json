@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "queues": [
+    {
+      "queue_id": "asr-LYxQ5yS4Xrg-5372-5447",
+      "path": "asr_review_queue.json",
+      "title": "山田摩衣：教育與醫療園區質詢 ASR 初標",
+      "councilor_id": "yamada_mai",
+      "councilor_name": "山田摩衣",
+      "roc_year": "115",
+      "date": "2026-04-02",
+      "video_id": "LYxQ5yS4Xrg",
+      "issue_ids": ["education", "transport"],
+      "issue_labels": ["托育教育", "交通行人"],
+      "item_count": 9,
+      "status_hint": "needs_review"
+    },
+    {
+      "queue_id": "ntpc-2026-04-02-yamada-mai-transport-demo",
+      "path": "review_queue.json",
+      "title": "山田摩衣：板橋醫療園區停車場補助與收益質詢",
+      "councilor_id": "yamada_mai",
+      "councilor_name": "山田摩衣",
+      "roc_year": "115",
+      "date": "2026-04-02",
+      "video_id": "LYxQ5yS4Xrg",
+      "issue_ids": ["transport"],
+      "issue_labels": ["交通行人"],
+      "item_count": 8,
+      "status_hint": "demo"
+    }
+  ]
+}

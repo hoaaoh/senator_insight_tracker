@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>議會質詢段落標註</title>
+    <link rel="stylesheet" href="./review.css" />
+  </head>
+  <body>
+    <dialog id="reviewerDialog" class="reviewer-dialog">
+      <form id="reviewerDialogForm" method="dialog">
+        <p class="eyebrow">Reviewer ID</p>
+        <h2>請先填寫你的名字或代號</h2>
+        <p class="dialog-copy">
+          這會記錄在此裝置的瀏覽器中，之後同一台裝置回來會自動沿用。
+        </p>
+        <label>
+          <span>名字或代號</span>
+          <input id="reviewerDialogName" autocomplete="nickname" required placeholder="例如：hao、reviewer-01" />
+        </label>
+        <button class="primary" type="submit">開始校正</button>
+      </form>
+    </dialog>
+
+    <header class="review-header">
+      <div>
+        <p class="eyebrow">Transcript Review</p>
+        <h1>議會質詢段落標註</h1>
+        <p id="queueMeta" class="meta-line">載入校正任務中...</p>
+      </div>
+      <div class="header-actions">
+        <a class="back-link" href="./review.html">回到影片清單</a>
+        <button id="exportJson" type="button">匯出 JSON</button>
+        <button id="openIssue" type="button">開 GitHub Issue</button>
+      </div>
+    </header>
+
+    <main class="review-shell">
+      <aside class="queue-panel">
+        <div class="progress-card">
+          <strong id="progressText">0 / 0</strong>
+          <span>已確認段落</span>
+          <div class="progress-bar"><span id="progressBar"></span></div>
+        </div>
+        <label class="field-label" for="reviewerName">Reviewer</label>
+        <input id="reviewerName" placeholder="你的名字或代號" />
+        <label class="field-label" for="githubRepo">GitHub Repo</label>
+        <input id="githubRepo" placeholder="owner/repo" />
+        <section class="task-panel" aria-label="校正任務列表">
+          <div class="task-heading">
+            <div>
+              <p class="eyebrow">Review Queues</p>
+              <h2>校正任務</h2>
+            </div>
+          </div>
+          <div class="task-tabs" role="group" aria-label="任務分組">
+            <button id="groupByCouncilor" class="active" type="button">依議員</button>
+            <button id="groupByYear" type="button">依年度</button>
+          </div>
+          <div id="taskList" class="task-list"></div>
+        </section>
+        <div id="queueList" class="queue-list"></div>
+      </aside>
+
+      <section class="workbench" aria-label="校正表單">
+        <section class="source-panel">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Source</p>
+              <h2 id="itemTitle">--</h2>
+            </div>
+            <span id="itemCounter" class="pill">--</span>
+          </div>
+          <div class="evidence-grid">
+            <div class="video-card">
+              <div class="embed-wrap">
+                <iframe
+                  id="youtubePlayer"
+                  title="YouTube 質詢片段"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowfullscreen
+                  loading="lazy"
+                  referrerpolicy="strict-origin-when-cross-origin"
+                ></iframe>
+                <figure id="frameFallback" class="frame-card" hidden>
+                  <img id="evidenceFrame" alt="質詢影格" />
+                  <figcaption id="frameCaption">影格</figcaption>
+                </figure>
+              </div>
+              <div class="video-actions" aria-label="影片片段操作">
+                <button id="replayEvidence" type="button">播放本段</button>
+                <button id="contextEvidence" type="button">加入前後 5 秒</button>
+              </div>
+            </div>
+            <div class="source-details">
+              <a id="sourceLink" class="source-button" target="_blank" rel="noreferrer">開啟原始影片</a>
+              <dl>
+                <div>
+                  <dt>時間</dt>
+                  <dd id="timeRange">--</dd>
+                </div>
+                <div>
+                  <dt>建議議員</dt>
+                  <dd id="suggestedSpeaker">--</dd>
+                </div>
+                <div>
+                  <dt>建議議題</dt>
+                  <dd id="suggestedIssue">--</dd>
+                </div>
+                <div>
+                  <dt>建議角色</dt>
+                  <dd id="suggestedRole">--</dd>
+                </div>
+              </dl>
+            </div>
+          </div>
+          <div class="asr-card">
+            <div class="mini-heading">ASR 原文</div>
+            <p id="asrText"></p>
+          </div>
+        </section>
+
+        <section class="form-panel">
+          <div class="form-grid">
+            <label>
+              <span>是否納入</span>
+              <select id="includeStatus">
+                <option value="include">納入</option>
+                <option value="exclude">排除</option>
+                <option value="uncertain">不確定</option>
+              </select>
+            </label>
+            <label>
+              <span>發言者</span>
+              <select id="speakerId"></select>
+            </label>
+            <label>
+              <span>發言者信心</span>
+              <select id="speakerConfidence">
+                <option value="confirmed">確認</option>
+                <option value="likely">大致可信</option>
+                <option value="uncertain">不確定</option>
+              </select>
+            </label>
+            <label>
+              <span>主要議題</span>
+              <select id="primaryIssue"></select>
+            </label>
+            <fieldset>
+              <legend>次要議題</legend>
+              <div id="secondaryIssues" class="checkbox-grid"></div>
+            </fieldset>
+            <label>
+              <span>行動類型</span>
+              <select id="actionType">
+                <option value="質詢候選">質詢候選</option>
+                <option value="質詢">質詢</option>
+                <option value="要求改善">要求改善</option>
+                <option value="要求專案報告">要求專案報告</option>
+                <option value="索取資料">索取資料</option>
+                <option value="追蹤承諾">追蹤承諾</option>
+                <option value="非行動">非行動</option>
+              </select>
+            </label>
+            <label>
+              <span>行動意圖</span>
+              <input id="actionIntent" placeholder="例如：要求專案報告、追問收益歸屬" />
+            </label>
+            <label>
+              <span>證據角色</span>
+              <select id="evidenceRole">
+                <option value="core">core - 核心證據</option>
+                <option value="detail">detail - 補充細節</option>
+                <option value="tail">tail - 收尾結論</option>
+                <option value="exclude">exclude - 排除</option>
+              </select>
+              <small id="evidenceRoleHelp" class="field-help"></small>
+            </label>
+            <label>
+              <span>質詢品質評分</span>
+              <select id="questionQualityScore">
+                <option value="">未評分</option>
+                <option value="5">5 - 具體、有追問、有要求</option>
+                <option value="4">4 - 清楚且有追問</option>
+                <option value="3">3 - 有議題但要求普通</option>
+                <option value="2">2 - 模糊或偏宣示</option>
+                <option value="1">1 - 程序/無實質質詢</option>
+              </select>
+              <small id="questionQualityHelp" class="field-help"></small>
+            </label>
+          </div>
+
+          <details class="quality-guide" open>
+            <summary>質詢品質怎麼評？</summary>
+            <dl>
+              <div>
+                <dt>5 分</dt>
+                <dd>問題具體、點出對象或數據，有連續追問，且提出明確要求、期限或後續追蹤。</dd>
+              </div>
+              <div>
+                <dt>4 分</dt>
+                <dd>問題清楚、有追問或要求，但證據、期限或後續追蹤稍弱。</dd>
+              </div>
+              <div>
+                <dt>3 分</dt>
+                <dd>有明確議題與基本質詢，但主要是詢問現況、表達關切或要求較籠統。</dd>
+              </div>
+              <div>
+                <dt>2 分</dt>
+                <dd>議題或要求模糊，偏向宣示、鋪陳、重複陳述，難以判斷具體監督效果。</dd>
+              </div>
+              <div>
+                <dt>1 分</dt>
+                <dd>程序發言、寒暄、離題、ASR 錯接，或幾乎沒有實質質詢內容。</dd>
+              </div>
+            </dl>
+          </details>
+
+          <details class="role-guide">
+            <summary>證據角色怎麼判斷？</summary>
+            <dl>
+              <div>
+                <dt>core</dt>
+                <dd>最能代表這筆行動的段落，例如直接追問補助金額、收益歸屬或提出明確要求。</dd>
+              </div>
+              <div>
+                <dt>detail</dt>
+                <dd>補充背景、金額、官員答覆、制度機制或追問細節，幫助理解核心行動。</dd>
+              </div>
+              <div>
+                <dt>tail</dt>
+                <dd>質詢結尾、主席回應、要求列入、要求專案報告，用來標示這串質詢的結論。</dd>
+              </div>
+              <div>
+                <dt>exclude</dt>
+                <dd>不應納入這筆 action，例如換下一位議員、程序發言、ASR 錯接或與議題無關。</dd>
+              </div>
+            </dl>
+          </details>
+
+          <label class="textarea-label">
+            <span>校正版逐字稿</span>
+            <textarea id="correctedText" rows="8"></textarea>
+          </label>
+          <label class="textarea-label">
+            <span>質詢品質評分依據</span>
+            <textarea id="questionQualityNotes" rows="3" placeholder="例如：有追問預算來源與後續期限，但缺少具體數據"></textarea>
+          </label>
+          <label class="textarea-label">
+            <span>Notes</span>
+            <textarea id="reviewNotes" rows="5" placeholder="請寫分類理由、疑義、是否需二次確認"></textarea>
+          </label>
+
+          <div class="form-actions">
+            <button id="prevItem" type="button">上一段</button>
+            <button id="skipItem" type="button">跳過</button>
+            <button id="saveDraft" type="button">儲存草稿</button>
+            <button id="confirmItem" class="primary" type="button">確認這段</button>
+            <button id="nextItem" type="button">下一段</button>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <script src="../data.js"></script>
+    <script src="./review.js"></script>
+  </body>
+</html>
