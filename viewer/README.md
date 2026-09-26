@@ -10,6 +10,7 @@
 - 政見對照
 - 影片證據展開
 - 月份、民代、議題篩選
+- `/election-map.html` 2026 新北市議員參選地圖
 - `/reviewer/review.html` 人工校正工作台
 
 ## 不負責的事情
@@ -49,6 +50,12 @@ python3 -m http.server 5173 --directory viewer
 
 ```text
 http://localhost:5173/
+```
+
+參選地圖：
+
+```text
+http://localhost:5173/election-map.html
 ```
 
 校正工作台：

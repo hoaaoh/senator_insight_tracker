@@ -93,6 +93,23 @@ h2 {
   white-space: nowrap;
 }
 
+.header-map-link {
+  padding-right: 10px;
+  border-right: 1px solid var(--line);
+  color: var(--blue);
+  font-size: 13px;
+  font-weight: 850;
+  text-decoration: none;
+}
+
+.header-map-link:hover,
+.header-map-link:focus-visible {
+  color: var(--teal);
+  outline: none;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
 .status-dot {
   width: 9px;
   height: 9px;

@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026 新北市議員參選地圖</title>
+    <link rel="stylesheet" href="./election-map.css" />
+  </head>
+  <body>
+    <header class="map-header">
+      <a class="back-link" href="./index.html" aria-label="返回議題追蹤總覽">←</a>
+      <div class="map-heading">
+        <p class="eyebrow">2026 New Taipei City Council</p>
+        <h1>新北市議員參選地圖</h1>
+        <p id="headerSummary" class="header-summary">13 個選舉區，112 位登記參選人</p>
+      </div>
+      <a class="source-link" href="https://web.cec.gov.tw/api/file/a37cb76f-7481-4ab5-bab3-4ec25cb51e76.pdf">官方名冊 ↗</a>
+    </header>
+
+    <main class="map-workspace">
+      <section class="candidate-column incumbent-column" aria-labelledby="incumbentTitle">
+        <div class="column-heading">
+          <p class="eyebrow">Incumbents</p>
+          <div class="heading-row">
+            <h2 id="incumbentTitle">現任參選</h2>
+            <span id="incumbentCount" class="count-badge">0</span>
+          </div>
+        </div>
+        <div id="incumbentList" class="candidate-list"></div>
+      </section>
+
+      <section class="map-stage" aria-label="新北市議員選舉區互動地圖">
+        <div class="district-summary" aria-live="polite">
+          <span id="districtNumber" class="district-number">05</span>
+          <div>
+            <h2 id="districtName">第五選舉區</h2>
+            <p id="districtAreas">板橋區</p>
+          </div>
+        </div>
+
+        <div id="mapCanvas" class="map-canvas">
+          <div class="map-loading">正在載入行政區邊界…</div>
+        </div>
+
+        <div class="map-foot">
+          <p>移動滑鼠或點選地圖區塊查看名單</p>
+          <div class="indigenous-buttons" aria-label="原住民選舉區">
+            <button type="button" data-district="12">12 平地原住民</button>
+            <button type="button" data-district="13">13 山地原住民</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="candidate-column challenger-column" aria-labelledby="challengerTitle">
+        <div class="column-heading">
+          <p class="eyebrow">Challengers</p>
+          <div class="heading-row">
+            <h2 id="challengerTitle">新人參選</h2>
+            <span id="challengerCount" class="count-badge">0</span>
+          </div>
+        </div>
+        <div id="challengerList" class="candidate-list"></div>
+      </section>
+    </main>
+
+    <footer class="map-footer">
+      <p>資料狀態：2026/09/04 登記名單，正式候選資格仍待選舉委員會審定。「新人」依官方名冊指非現任，不代表首次參選。</p>
+      <p><a href="https://sewer.ntpc.gov.tw/arcgis/rest/services/Sewer/Basemap/MapServer/18">地圖邊界：新北市政府公開圖資 ↗</a></p>
+    </footer>
+
+    <script src="./election-data.js"></script>
+    <script src="./election-map.js"></script>
+  </body>
+</html>
