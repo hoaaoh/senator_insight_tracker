@@ -272,6 +272,8 @@ a {
   stroke: #fff;
   stroke-width: 1.4;
   vector-effect: non-scaling-stroke;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
   cursor: pointer;
   transition: fill 150ms ease, filter 150ms ease;
 }

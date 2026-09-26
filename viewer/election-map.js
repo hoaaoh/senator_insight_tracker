@@ -197,6 +197,7 @@ async function renderMap() {
       path.addEventListener("mouseleave", clearHover);
       path.addEventListener("focus", () => setHover(district.id));
       path.addEventListener("blur", clearHover);
+      path.addEventListener("mousedown", (event) => event.preventDefault());
       path.addEventListener("click", () => selectDistrict(district.id));
       path.addEventListener("keydown", (event) => {
         if (event.key === "Enter" || event.key === " ") {
